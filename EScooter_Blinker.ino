@@ -3,8 +3,7 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-#define PIN_NEO_PIXEL_L 15
-#define PIN_NEO_PIXEL_R 2
+#define PIN_NEO_PIXEL 15
 #define NUM_PIXELS 30
 #define BUTTON_PIN_R 19
 #define BUTTON_PIN_L 18
@@ -16,42 +15,54 @@ int a = 1;
 int currentState_L;
 int currentState_R;
 
-Adafruit_NeoPixel NeoPixel_L(NUM_PIXELS, PIN_NEO_PIXEL_L, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel NeoPixel_R(NUM_PIXELS, PIN_NEO_PIXEL_R, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel NeoPixel(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
 
 void blinker_l() {
   for (int i=0; i<5; i++) {
-    NeoPixel_L.fill(NeoPixel_L.Color(0, 0, 0), 0, 7);
+    NeoPixel.fill(NeoPixel.Color(0, 0, 0), 0, 7);
     // turn pixels to green one-by-one with delay between each pixel
     for (int pixel = 0; pixel < 7; pixel++) {           // for each pixel
-      NeoPixel_L.setPixelColor(pixel, NeoPixel_L.Color(255, 255, 0));  // it only takes effect if pixels.show() is called
-      NeoPixel_L.show();   
+      NeoPixel.setPixelColor(pixel, NeoPixel.Color(255, 255, 0));  // it only takes effect if pixels.show() is called
+      NeoPixel.show();   
       
       delay(70);
     }
+
+  currentState_L = digitalRead(BUTTON_PIN_L);
+
+  if(lastState_L == HIGH && currentState_L == LOW) {
+    i = 3;
+    //lastState_L = currentState_L;
+    }
   }
-  NeoPixel_L.fill(NeoPixel_L.Color(255, 0, 0), 0, 7);
-  NeoPixel_L.show();  
+  NeoPixel.fill(NeoPixel.Color(255, 0, 0), 0, 7);
+  NeoPixel.show();  
 }
 
 void blinker_r() {
   for (int i=0; i<5; i++) {
-    NeoPixel_R.fill(NeoPixel_R.Color(0, 0, 0), 0, 7);
+    NeoPixel.fill(NeoPixel.Color(0, 0, 0), 7, 7);
     // turn pixels to green one-by-one with delay between each pixel
-    for (int pixel = 0; pixel < 7; pixel++) {
-      NeoPixel_R.setPixelColor(pixel, NeoPixel_R.Color(255, 255, 0));
-      NeoPixel_R.show();
+    for (int pixel = 7; pixel < 15; pixel++) {
+      NeoPixel.setPixelColor(pixel, NeoPixel.Color(255, 255, 0));
+      NeoPixel.show();
   
       delay(70);
     }
+
+  currentState_R = digitalRead(BUTTON_PIN_R);
+
+  if(lastState_R == HIGH && currentState_R == LOW) {
+    i = 3;
+    }
+    
   }
-    NeoPixel_R.fill(NeoPixel_R.Color(255, 0, 0), 0, 7);
-    NeoPixel_R.show();   
+    NeoPixel.fill(NeoPixel.Color(255, 0, 0), 7, 7);
+    NeoPixel.show();   
 }
 
 void setup() {
-  NeoPixel_L.begin();  // initialize NeoPixel strip object (REQUIRED)
-  NeoPixel_R.begin();
+  NeoPixel.begin();
   
   lcd.init();
   lcd.backlight();
@@ -59,10 +70,10 @@ void setup() {
   pinMode(BUTTON_PIN_R, INPUT_PULLUP);
   pinMode(BUTTON_PIN_L, INPUT_PULLUP);
 
-  NeoPixel_L.fill(NeoPixel_L.Color(255, 0, 0), 0, 10);
-  NeoPixel_R.fill(NeoPixel_R.Color(255, 0, 0), 0, 10);
-  NeoPixel_L.show();
-  NeoPixel_R.show();  
+  NeoPixel.fill(NeoPixel.Color(255, 0, 0), 0, 7);
+  NeoPixel.fill(NeoPixel.Color(255, 0, 0), 8, 7);
+  NeoPixel.show();
+  NeoPixel.show();  
 
 }
 
