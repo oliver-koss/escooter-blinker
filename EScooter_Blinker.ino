@@ -27,9 +27,9 @@ void blinker_l() {
   for (int i=0; i<2; i++) {
     NeoPixel.fill(NeoPixel.Color(0, 0, 0), 0, 9);
     Serial.println(i);
-    // turn pixels to green one-by-one with delay between each pixel
-    for (int pixel = 9; pixel>-1; pixel--) {           // for each pixel
-      NeoPixel.setPixelColor(pixel, NeoPixel.Color(255, 255, 0));  // it only takes effect if pixels.show() is called
+    
+    for (int pixel = 9; pixel>-1; pixel--) {
+      NeoPixel.setPixelColor(pixel, NeoPixel.Color(255, 255, 0));
       NeoPixel.show();   
       
       delay(70);
@@ -47,7 +47,7 @@ void blinker_l() {
 void blinker_r() {
   for (int i=0; i<2; i++) {
     NeoPixel.fill(NeoPixel.Color(0, 0, 0), 12, 10);
-    // turn pixels to green one-by-one with delay between each pixel
+
     for (int pixel = 12; pixel < 22; pixel++) {
       NeoPixel.setPixelColor(pixel, NeoPixel.Color(255, 255, 0));
       NeoPixel.show();
@@ -117,25 +117,16 @@ void setup() {
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("Enabled.");
-
-
-//  NeoPixel.fill(NeoPixel.Color(255, 0, 0), 6, 10);
-//  NeoPixel.fill(NeoPixel.Color(209/5, 134/5, 0), 0, 6);
-//  NeoPixel.fill(NeoPixel.Color(209/5, 134/5, 0), 16, 6);
-
-//  NeoPixel.show();  
+  lcd.print("Enabled."); 
 
   startup();
 
 }
 
 void loop() {
-//  Serial.print("lol\n");
+
   button_l.loop();
   button_r.loop();
-
-//  Serial.print("lol2\n");
 
 
   if(button_l.getState() == 0 && button_r.getState() == 1) {
@@ -154,26 +145,9 @@ void loop() {
     blinker_r();
     lcd.clear();
   }
-//    Serial.print("lol3\n");
-    
-  //Serial.write(Serial2.read());
-  /*
-  byte Hour = gps.time.hour();
-  byte Minute = gps.time.minute();
-  byte Second = gps.time.second();
-  
-  int Hourmesz = Hour + 2;
-  
-  lcd.clear();
-  lcd.setCursor(0, 1);
-  
-  lcd.print(Hour);
-  lcd.print(":");
-  lcd.print(Minute);
-  lcd.print(":");
-  lcd.print(Second);
-  //Serial.print(Time); 
-*/
+
+
+
 //  Serial.write(Serial2.read());
   if (gps.encode(Serial2.read())){
     if (gps.time.isUpdated()) {
@@ -197,5 +171,4 @@ void loop() {
       lcd.print(gps.speed.kmph());
     }
   }
-  Serial.print("Loop");
 }
