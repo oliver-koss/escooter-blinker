@@ -2,9 +2,11 @@
 #include <LiquidCrystal_I2C.h>
 #include <ezButton.h>
 
-#include "time.h"
+#include <ESP32Time.h>
 
 #include <TinyGPSPlus.h>
+
+ESP32Time rtc(3600);
 
 TinyGPSPlus gps;
 
@@ -15,10 +17,19 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define BUTTON_PIN_R 19
 #define BUTTON_PIN_L 18
 
+int Year = gps.date.year();
+byte Month = gps.date.month();
+byte Day = gps.date.day();
+byte Hour = gps.time.hour();
+byte Minute = gps.time.minute();
+byte Second = gps.time.second();
+
+
 ezButton button_l(BUTTON_PIN_L);
 ezButton button_r(BUTTON_PIN_R);
 
 int a = 1;
+int startupvar = 1;
 
 
 Adafruit_NeoPixel NeoPixel(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
@@ -69,11 +80,11 @@ void blinker_r() {
 }
 
 void gettime() {
-  byte Hour = gps.time.hour();
-  byte Minute = gps.time.minute();
-  byte Second = gps.time.second();
 
- // setTime(Hour, Minute, Second);
+//  setTime(Hour, Minute, Second, Day, Month, Year);
+
+  rtc.setTime(Second, Minute, Hour, Day, Month, Year);
+
  // adjusttime(2, 0);
   }
 
@@ -128,6 +139,7 @@ void loop() {
   button_l.loop();
   button_r.loop();
 
+  Serial.println(rtc.getTime());
 
   if(button_l.getState() == 0 && button_r.getState() == 1) {
     lcd.clear();
@@ -150,6 +162,7 @@ void loop() {
 
 //  Serial.write(Serial2.read());
   if (gps.encode(Serial2.read())){
+    /*
     if (gps.time.isUpdated()) {
       byte Hour = gps.time.hour();
       byte Minute = gps.time.minute();
@@ -170,5 +183,11 @@ void loop() {
       lcd.print("Speed: ");
       lcd.print(gps.speed.kmph());
     }
+  } */
+    if (gps.location.isValid() && startupvar == 1){
+      gettime();
+      startupvar = 0;
+      }
   }
+  lcd.print(rtc.getTime());
 }
