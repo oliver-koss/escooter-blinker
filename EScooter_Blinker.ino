@@ -8,6 +8,8 @@
 
 ESP32Time rtc(3600);
 
+String uhr = "0";
+
 TinyGPSPlus gps;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -139,8 +141,6 @@ void loop() {
   button_l.loop();
   button_r.loop();
 
-  Serial.println(rtc.getTime());
-
   if(button_l.getState() == 0 && button_r.getState() == 1) {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -184,10 +184,20 @@ void loop() {
       lcd.print(gps.speed.kmph());
     }
   } */
-    if (gps.location.isValid() && startupvar == 1){
+    if (gps.time.isValid() && startupvar == 1){
       gettime();
       startupvar = 0;
+    } else {
+        lcd.setCursor(0, 1);
+        lcd.print("No GPS");
+        }
       }
+      
+  if (rtc.getTime() != uhr) {
+    lcd.setCursor(0, 1);
+    lcd.print(rtc.getTime() + "\n");
+    Serial.println(rtc.getDateTime(true) + "\n");
+    Serial.println(gps.time.hour() + "\n");
+    String uhr = rtc.getTime();
   }
-  lcd.print(rtc.getTime());
 }
